@@ -17,23 +17,19 @@ mkdir -p ${VVV_PATH_TO_SITE}/log
 touch ${VVV_PATH_TO_SITE}/log/error.log
 touch ${VVV_PATH_TO_SITE}/log/access.log
 
-# Install and configure the latest stable version of WordPress
+# Install and configure the latest stable version of ClassicPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
-  echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
+  echo "Checking out ClassicPress trunk. See https://github.com/ClassicPress/ClassicPress"
+  noroot git clone "https://github.com/ClassicPress/ClassicPress" "${VVV_PATH_TO_SITE}/public_html"
   cd "${VVV_PATH_TO_SITE}/public_html"
   noroot npm install
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
-  echo "Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  if [[ -e .svn ]]; then
-    noroot svn up
+  echo "Updating ClassicPress trunk. See https://github.com/ClassicPress/ClassicPress"
+  if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'develop' ]]; then
+    noroot git pull --no-edit
   else
-    if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-      noroot git pull --no-edit git://develop.git.wordpress.org/ master
-    else
-      echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
-    fi
+    echo "Skip auto git pull on classicpress since not on develop branch"
   fi
   noroot npm install &>/dev/null
   noroot grunt
@@ -41,7 +37,7 @@ fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
-  echo "Configuring WordPress trunk..."
+  echo "Configuring ClassicPress trunk..."
   noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --path="${VVV_PATH_TO_SITE}/public_html/src" --extra-php <<PHP
 define( 'WP_DEBUG', true );
 define( 'SCRIPT_DEBUG', true );
@@ -52,7 +48,7 @@ fi
 
 if ! $(noroot wp core is-installed --path="${VVV_PATH_TO_SITE}/public_html/src"); then
   cd ${VVV_PATH_TO_SITE}
-  echo "Installing WordPress trunk..."
+  echo "Installing ClassicPress trunk..."
 
   if [ "${WP_TYPE}" = "subdomain" ]; then
     INSTALL_COMMAND="multisite-install --subdomains"
