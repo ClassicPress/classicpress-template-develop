@@ -1,12 +1,10 @@
-# VVV Custom site template (WP Core develop)
+# ClassicPress core development
 
-For when you just need a dev site running wordpress develop. Great for contributor days, Trac tickets, etc
-
-For general WP work such as theme building or plugin development, use the normal site template instead
+For when you just need a dev site running classicpress development version. 
 
 ## Overview
 
-This template will allow you to create a WordPress core dev environment running wordpress trunk using only `vvv-custom.yml`.
+This template will allow you to create a ClassicPress core dev environment running wordpress trunk using only `vvv-custom.yml`.
 
 The supported environments are:
 
@@ -20,7 +18,7 @@ The supported environments are:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
+  repo: https://github.com/Mte90/classicpress-template-develop
   hosts:
     - my-site.test
 ```
@@ -36,7 +34,7 @@ my-site:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
+  repo: https://github.com/Mte90/classicpress-template-develop
   hosts:
     - multisite.test
     - site1.multisite.test
